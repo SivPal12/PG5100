@@ -5,12 +5,14 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
+
+import no.nith.sivpal12.pg5100.forelesninger.forelesning01.constants.db.Sql;
+import no.nith.sivpal12.pg5100.forelesninger.forelesning01.constants.db.Tables;
+import no.nith.sivpal12.pg5100.forelesninger.forelesning01.pojo.Animal;
 
 public class Data {
-
-    private static final String COLUMN_STEMMER = "stemmer";
-    private static final String COLUMN_ART = "art";
-    private static final String SQL_ALL = "select * from NASJONALDYR";
 
     static {
         try {
@@ -20,23 +22,26 @@ public class Data {
         }
     }
 
-    public static void printStatus() {
+    private static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+    }
+
+    public static List<Animal> getAllAnimals() {
+        List<Animal> animals = new LinkedList<>();
         try (Connection conn = getConnection();
                 PreparedStatement ps = conn
-                        .prepareStatement(SQL_ALL);
+                        .prepareStatement(Sql.NASJONALDYR_SQL_ALL);
                 ResultSet rs = ps.executeQuery()) {
-            System.out.println("Art          Stemmer");
             while (rs.next()) {
-                System.out.println(String.format("%-12s %7d",
-                        rs.getString(COLUMN_ART), rs.getInt(COLUMN_STEMMER)));
+                animals.add(new Animal(
+                        rs.getString(Tables.NASJONALDYR_COLUMN_ART),
+                        rs.getInt(Tables.NASJONALDYR_COLUMN_STEMMER)));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
 
-    private static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+        return animals;
     }
 
 }

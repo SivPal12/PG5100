@@ -44,4 +44,15 @@ public class Data {
         return animals;
     }
 
+    public static void voteFor(String art) {
+        try (Connection conn = getConnection();
+                PreparedStatement ps = conn
+                        .prepareStatement(Sql.NASJONALDYR_UPDATE_VOTE);) {
+            ps.setString(1, art);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

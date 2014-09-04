@@ -36,11 +36,8 @@ public class Invoice implements Serializable {
 
     @Override
     public String toString() {
-        return "Invoice{" +
-                "id=" + id +
-                ", customer='" + customer + '\'' +
-                ", address='" + address + '\'' +
-                ", amount=" + amount +
-                '}';
+        return String.format(
+                "Invoice {id=%s, customer=%s, address=%s, amount=%s}", id,
+                customer, address, amount);
     }
 }
